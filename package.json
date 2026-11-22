@@ -1,0 +1,15 @@
+{
+  "name": "fluent-english",
+  "private": true,
+  "type": "module",
+  "description": "Fluent: an English speaking coach on a video call, running on your own Mac.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20.12"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0"
+  }
+}

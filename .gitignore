@@ -1,0 +1,28 @@
+# Installed packages (npm install makes them again)
+node_modules/
+
+# Secret keys: never publish
+.env
+.env.*
+!.env.example
+
+# The learner's private data (profile, diary, coach memory, PIN, sound log)
+data/
+data-backup-*/
+
+# Old copies of the code kept on the owner's Mac
+backup-*/
+Screenshot*.png
+
+# Rollback copies and test pages of the 3D avatar tools
+tools/jake3d/before-*/
+tools/jake3d/bench/
+
+# Built on each Mac by tts.js
+tts/bin/
+
+# macOS and editor files
+.DS_Store
+.claude/
+.vscode/
+*.log

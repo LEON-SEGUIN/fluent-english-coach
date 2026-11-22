@@ -1,0 +1,87 @@
+/* Fluent — the light look (2026-10-28): clean and airy like a tutoring marketplace (inspired by Preply):
+   white pages, near-black text, a pink accent for the main actions, flat cards with a thin border,
+   the tutor's face on a white "next lesson" card. Loaded after style.css, stage.css and shadow.css.
+   The call keeps its dark video look. Dark mode stays available (Settings › Look). */
+:root {
+  --bg: #FFFFFF;
+  --surface: #FFFFFF;
+  --surface-2: #F4F4F8;
+  --surface-3: #EAE9F1;
+  --ink: #121117;
+  --muted: #6A697C;
+  --line: #E6E5EE;
+  --azul: #FF7AAC;
+  --azul-ink: #C2185B;
+  --azul-soft: #FFE8F1;
+  --on-azul: #121117;
+  --azafran: #FFB000;
+  --azafran-soft: #FFF3D6;
+  --green: #12A150;
+  --shadow: 0 1px 2px rgba(18, 17, 23, 0.04), 0 8px 24px rgba(18, 17, 23, 0.05);
+  --shadow-lg: 0 24px 60px rgba(18, 17, 23, 0.16);
+  --display: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --r: 16px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --azul: #FF8DB8; --azul-ink: #FFB3D0; --azul-soft: #3A1A2A; --on-azul: #121117;
+  }
+}
+:root[data-theme="dark"] { --azul: #FF8DB8; --azul-ink: #FFB3D0; --azul-soft: #3A1A2A; --on-azul: #121117; }
+
+h1 { font-weight: 800; letter-spacing: -0.03em; }
+h2, h3 { letter-spacing: -0.02em; }
+.eyebrow { letter-spacing: 0.06em; }
+
+/* Top bar: white, a thin line, the active tab underlined in pink. */
+.top { background: color-mix(in srgb, var(--surface) 94%, transparent); border-bottom: 1px solid var(--line); }
+.tabs button[aria-current="page"] { color: var(--ink); background: transparent; box-shadow: inset 0 -3px 0 var(--azul); border-radius: 0; }
+.tabs button { border-radius: 0; padding: 18px 12px; }
+.tabs button:hover { background: transparent; color: var(--ink); }
+.mark { background: var(--ink); }
+.mark::after { background: var(--azul); }
+
+/* Buttons: pink for the main action (black text), black for strong secondary actions. */
+.btn { border-radius: 12px; }
+.btn.ghost { background: var(--surface); color: var(--ink); border: 1.5px solid var(--line); }
+.btn.ghost:hover:not(:disabled) { border-color: var(--ink); filter: none; }
+.btn.green { background: var(--ink); color: #fff; }
+.btn.call-btn { background: var(--azul); color: var(--on-azul); border-radius: 12px; box-shadow: none; }
+.btn.call-btn:hover:not(:disabled) { filter: brightness(1.04); }
+
+/* Cards: flat, thin border, no heavy shadow. */
+.card, .mode, .stat { box-shadow: none; }
+button.card:hover, .mode:hover { border-color: var(--ink); transform: none; }
+.chip.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+/* The next lesson: a white card with the tutor in their room, like a tutor's profile card. */
+.class-card { background: var(--surface); color: var(--ink); border: 1.5px solid var(--line); box-shadow: var(--shadow); }
+.class-card::before { display: none; }
+.class-card .eyebrow { color: var(--azul-ink); }
+.class-card h2 { color: var(--ink); }
+.class-card .sub, .class-card .last { color: var(--muted); }
+.class-card .face { box-shadow: 0 0 0 4px var(--surface), 0 10px 26px rgba(18, 17, 23, 0.14); }
+.class-card .face-wrap .live-dot { border-color: var(--surface); }
+.class-card .btn.call-btn { background: var(--azul); color: var(--on-azul); box-shadow: none; }
+.class-card .btn.ghost.light { background: var(--surface); color: var(--ink); border: 1.5px solid var(--line); }
+.class-card .btn.ghost.light:hover { background: var(--surface-2); }
+.next-lesson .when { background: var(--azafran-soft); color: var(--ink); }
+.next-lesson .objectives { color: var(--ink); }
+.class-card .meta span { background: var(--surface-2); }
+
+/* Practice heroes and soft panels. */
+.practice-hero { background: var(--azul-soft); border-color: transparent; }
+.quote { background: var(--surface-2); }
+.bar > i { background: var(--azul); }
+.unit-no, .mode .ico, .hw-item .ico, .drill-modes .ico, .stat-ico.cap { background: var(--azul-soft); color: var(--azul-ink); }
+.lesson-item.next { background: color-mix(in srgb, var(--azul-soft) 60%, transparent); }
+.lesson-item.next .num-dot { background: var(--ink); color: #fff; }
+.when-chip { background: var(--surface-2); color: var(--ink); }
+
+@media (max-width: 760px) {
+  .bottom-nav button[aria-current="page"] { color: var(--ink); }
+  .bottom-nav button[aria-current="page"] .nav-ico { background: var(--azul-soft); color: var(--azul-ink); }
+}
+
+/* The red count on a tab sits next to the label (tabs are taller here). */
+.tabs .nav-badge { top: 10px; right: -4px; }

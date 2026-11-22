@@ -1,0 +1,118 @@
+/* Fluent — the tutor's video call as a webcam shot: a real room behind the drawn tutor, blurred like a camera's
+   depth of field, the room's light falling on the tutor, a little vignette and sensor grain.
+   Loaded after style.css. Photos and licences: img/CREDITS.md.
+   Performance: every effect is a static layer (photo, gradients, grain images) on its own GPU layer, so
+   nothing is filtered or repainted per frame except the drawing itself. */
+
+/* ---- each tutor's room: photo, framing, colour of the light and where it comes from */
+.call.jake, .portrait.jake, .class-card.jake {
+  --room: url("img/jake-room.jpg"); /* already out of focus, like through a lens: see img/CREDITS.md */
+  --room-sm: url("img/jake-room-sm.jpg");
+  --room-pos: 50% 50%; /* Jake stands in the middle of the picture */
+  --room-bg: #928B7D;
+  --room-light: 255 234 208; /* daylight through the tall window */
+  --light-at: 12% 34%;
+}
+.call.emma, .portrait.emma, .class-card.emma {
+  --room: url("img/emma-office.jpg");
+  --room-sm: url("img/emma-office-sm.jpg");
+  --room-pos: 30% 42%;
+  --room-bg: #34302C;
+  --room-light: 232 240 255; /* daylight from the windows behind her */
+  --light-at: 50% 0%;
+}
+
+/* ---- the call stage */
+.call.jake .stage, .call.emma .stage { background: var(--room-bg); }
+.call.jake .stage::before, .call.emma .stage::before {
+  /* the room, out of focus: bigger than the stage so the blur has no soft edges */
+  inset: -24px;
+  opacity: 1;
+  background: var(--room) var(--room-pos) / cover no-repeat;
+  filter: blur(6px) saturate(1.08) brightness(0.9);
+  will-change: transform;
+}
+.call.jake .stage::after, .call.emma .stage::after {
+  /* over the tutor and the room together (plain transparency, no blend mode, so it works in every stacking
+     context): sensor grain that lightens and darkens, the window's light, a vignette, and the dark band
+     that keeps the subtitles readable (same as style.css) */
+  inset: 0;
+  height: auto;
+  will-change: transform;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.9 0 0 0 -0.56'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch' seed='9'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -0.9 0 0 0 0.34'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(transparent 52%, rgb(4 6 20 / 0.74)),
+    radial-gradient(85% 75% at var(--light-at), rgb(var(--room-light) / 0.2), rgb(var(--room-light) / 0) 70%),
+    radial-gradient(135% 115% at 50% 42%, transparent 58%, rgb(0 0 0 / 0.42) 100%);
+}
+
+/* Each layer on its own GPU layer: the drawing repaints every frame, the blurred photo and the overlay never do.
+   Without this the whole stage repainted with the blur and the grain: about 40 fps instead of 60 (measured). */
+.call.jake .stage .stage-art, .call.emma .stage .stage-art { will-change: transform; }
+
+/* ---- Jake in 3D (stage3d.js): a transparent canvas over the room; his picture until the model is loaded */
+.stage3d canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity 0.5s; }
+.stage3d .poster { position: absolute; left: 50%; top: 6%; height: 88%; aspect-ratio: 1; transform: translateX(-50%); object-fit: contain; transition: opacity 0.5s; }
+.stage3d.ready canvas { opacity: 1; }
+.stage3d.ready .poster { opacity: 0; }
+/* The drawing needed a strong grain to look filmed. A 3D person does not: the same layers, with a third of the grain. */
+.call.jake .stage::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.3 0 0 0 -0.19'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch' seed='9'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -0.28 0 0 0 0.105'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(transparent 52%, rgb(4 6 20 / 0.42)),
+    radial-gradient(85% 75% at var(--light-at), rgb(var(--room-light) / 0.2), rgb(var(--room-light) / 0) 70%),
+    radial-gradient(135% 115% at 50% 42%, transparent 58%, rgb(0 0 0 / 0.42) 100%);
+}
+/* The room: already blurred by the lens. stage3d.js gives it the size and the movement that go with his camera. */
+.call.jake .stage::before {
+  inset: -42% -14%;
+  filter: none;
+  background-size: var(--room-size, cover);
+  transform: translate3d(var(--room-x, 0px), var(--room-y, 0px), 0) scale(var(--room-s, 1));
+}
+@media (min-width: 901px) {
+  /* A card opens and he moves 13% aside (style.css). The camera moved: the room, further away, moves half as much. */
+  .call.jake .stage::before { transition: translate 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .call.jake .stage.has-card::before { translate: -5% 0; }
+}
+.jake-still { object-fit: cover; }
+/* His hands move low in the picture: the subtitles must not hide them */
+.call.jake .subs .sub-line { background: rgb(9 10 18 / 0.42); -webkit-backdrop-filter: none; backdrop-filter: none; }
+
+/* "Calling Jake…": the call already shows behind, frosted */
+.call.jake .ringing, .call.emma .ringing {
+  background: rgb(10 12 24 / 0.5);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
+  backdrop-filter: blur(18px) saturate(1.1);
+}
+
+/* ---- small round faces (lists, cards) and the face on the home card: the same room, softer */
+.portrait.jake, .portrait.emma, .class-card.jake .face, .class-card.emma .face { background: var(--room-bg); isolation: isolate; }
+.portrait.jake::before, .portrait.emma::before,
+.class-card.jake .face::before, .class-card.emma .face::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  z-index: 0;
+  background: var(--room-sm) var(--room-pos) / cover no-repeat;
+  filter: blur(3px) brightness(0.92);
+}
+.portrait.jake::before, .class-card.jake .face::before { filter: none; }
+.portrait .stage-art, .class-card .face .stage-art { position: relative; z-index: 1; }
+.class-card .face::before { will-change: transform; } /* the home card's face is alive: keep its blurred room cached */
+.portrait .live-dot, .class-card .face-wrap .live-dot { z-index: 2; }
+
+/* ---- readability over a real photo: chips and subtitles get a touch more contrast */
+.call.jake .stage .glass, .call.emma .stage .glass { background: rgb(8 10 20 / 0.42); }
+.call.jake .stage .sub-line, .call.emma .stage .sub-line { text-shadow: 0 1px 2px rgb(0 0 0 / 0.55), 0 0 18px rgb(0 0 0 / 0.35); }
+
+@media (max-width: 900px) {
+  /* phones are tall: show more of the window side of the room */
+  .call.emma { --room-pos: 28% 42%; }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .call.jake .ringing, .call.emma .ringing { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgb(10 12 24 / 0.86); }
+}

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>Fluent</title>
+  <meta name="description" content="Ton coach d'anglais personnel, en appel vidéo : accent américain, aisance, anglais du quotidien et des affaires.">
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0E1122" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Fluent">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="stage.css">
+  <link rel="stylesheet" href="shadow.css">
+  <link rel="stylesheet" href="theme.css">
+</head>
+<body>
+  <header class="top" id="top">
+    <div class="top-inner">
+      <a class="brand" href="#home" data-tab="home"><span class="mark" aria-hidden="true"></span>Fluent</a>
+      <nav class="tabs" id="tabs" aria-label="Sections"></nav>
+      <div class="top-right">
+        <span class="pill" id="pill-streak"></span>
+        <button class="icon-btn" id="open-settings" type="button"></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app" id="view" aria-live="polite"></main>
+
+  <nav class="bottom-nav" id="bottom-nav" aria-label="Sections"></nav>
+
+  <div id="call-root"></div>
+
+  <div class="sheet-backdrop" id="settings" hidden>
+    <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="settings-title"></section>
+  </div>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+
+  <script src="avatar.js"></script>
+  <script src="stage3d.js"></script>
+  <script src="js/core.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/call.js"></script>
+  <script src="js/views.js"></script>
+  <script src="js/lessons.js"></script>
+  <script src="js/course.js"></script>
+  <script src="js/shadow.js"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

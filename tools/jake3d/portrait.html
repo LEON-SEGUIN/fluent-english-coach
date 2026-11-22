@@ -1,0 +1,48 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+  html, body { margin: 0; width: 512px; height: 512px; background: transparent; overflow: hidden; }
+  .stage-art { position: absolute; inset: 0; }
+  .stage3d canvas { width: 100%; height: 100%; display: block; position: absolute; inset: 0; }
+  .stage3d .poster { display: none; }
+</style>
+<div id="wrap"></div>
+<script src="stage3d.js"></script>
+<script>
+// Renders Jake's still picture for the small faces and saves it.
+const stage = new Stage3D("jake");
+document.getElementById("wrap").append(stage.art);
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+(async () => {
+  while (!stage.ready && !stage.inner) await wait(100);
+  stage.renderer.setPixelRatio(1);
+  stage.renderer.setSize(512, 512, false);
+  stage.camera.aspect = 1;
+  stage.camera.updateProjectionMatrix();
+  stage.setEmotion("encouraging", 99999);
+  stage.nextStroll = stage.nextShrug = stage.nextGlance = stage.nextBlink = Infinity;
+  stage.waved = true;
+  // He looks straight at the camera: a three-quarter smile reads as a smirk on a small picture.
+  const head = stage.updateHead.bind(stage);
+  stage.updateHead = (now, dt, s, e) => { stage.pitch.x = stage.roll.x = stage.turn.x = 0; stage.ptr.at = -1e9; stage.aimFull = true; head(now, dt, s, e); };
+  stage.camBase = { viewH: 50, closeH: 50, top: 189 };
+  stage.resize = () => {};
+  const t0 = performance.now();
+  await new Promise((done) => {
+    const tick = (now) => {
+      stage.frame(now, { mode: "idle", level: 0 });
+      if (now - t0 > 1800) return done();
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+  stage.renderer.render(stage.scene, stage.camera);
+  const c = document.createElement("canvas");
+  c.width = c.height = 512;
+  c.getContext("2d").drawImage(stage.renderer.domElement, 0, 0, 512, 512);
+  const blob = await new Promise((r) => c.toBlob(r, "image/webp", 0.86));
+  await fetch("/save/portrait.webp", { method: "POST", body: blob });
+  window.__result = { bytes: blob.size };
+  window.__ready = true;
+})();
+</script>
